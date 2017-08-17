@@ -1,3 +1,5 @@
+import org.opencv.core.Mat;
+import org.opencv.imgcodecs.Imgcodecs;
 import path.Path;
 import path.PathFoundIterator;
 import path.SourceImage;
@@ -12,7 +14,14 @@ public class Application {
 
     static {
         try {
-            NativeUtils.loadLibraryFromJar("/libopencv_java320.so");
+            String os = System.getProperty("os.name");
+            if (os.contains("Windows")) {
+                System.out.println("Include library: opencv_java320.dll");
+                NativeUtils.loadLibraryFromJar("/opencv_java320.dll");
+            } else {
+                System.out.println("Include library: libopencv_java320.so");
+                NativeUtils.loadLibraryFromJar("/libopencv_java320.so");
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -68,8 +77,9 @@ public class Application {
     public static void removeFolder(File folder) {
         if (folder.exists()) {
             if (folder.isDirectory()) {
-                for (File c : folder.listFiles())
+                for (File c : folder.listFiles()) {
                     removeFolder(c);
+                }
             }
             folder.delete();
         }
